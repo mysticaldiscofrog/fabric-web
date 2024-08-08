@@ -16,7 +16,7 @@ HTML = '''
     <div class="container mx-auto p-4">
 
         <div class="mt-8 bg-white shadow-md rounded-lg p-6 space-y-6">
-            <h2 class="text-xl font-bold text-purple-700">Destiny Is Earned - Integrating Vision, Technology, and Sustainability</h2>
+            <h2 class="text-xl font-bold text-purple-700">Studio Create- Integrating Vision, Technology, and Sustainability</h2>
             <p class="text-gray-700">"Bridging innovation and practicality for a sustainable future"</p>
             <div>
                 <h3 class="text-lg font-semibold text-gray-900">About Studio Create:</h3>
