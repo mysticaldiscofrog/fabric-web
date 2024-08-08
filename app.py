@@ -34,8 +34,8 @@ HTML = '''
             <h2 class="text-xl font-bold text-purple-700">Destiny Is Earned - Integrating Vision, Technology, and Sustainability</h2>
             <p class="text-gray-700">"Bridging innovation and practicality for a sustainable future"</p>
             <div>
-                <h3 class="text-lg font-semibold text-gray-900">About [Your Name]:</h3>
-                <p class="text-gray-700">A visionary systems integrator, designer, and sustainability advocate. With a diverse background spanning construction, design, and data science, [Your Name] brings a unique, holistic approach to solving complex challenges.</p>
+                <h3 class="text-lg font-semibold text-gray-900">About Studio Create:</h3>
+                <p class="text-gray-700">Visionary systems integrators, designers, and sustainability advocates. With many diverse background we bring a unique and holistic approach to solving complex challenges.</p>
             </div>
             <div>
                 <h3 class="text-lg font-semibold text-gray-900">Our Ethos:</h3>
@@ -78,12 +78,12 @@ HTML = '''
             </div>
             <div>
                 <h3 class="text-lg font-semibold text-gray-900">Our Vision:</h3>
-                <p class="text-gray-700">[Your Name]'s journey from builder to systems integrator has fostered a unique perspective on the interconnectedness of our world. We create functional, beautiful solutions that address real-world problems, spanning individual, corporate, and global scales.</p>
+                <p class="text-gray-700">Studio Create's is on a journey to foster a unique perspective on the interconnectedness of our world. We create functional, beautiful solutions that address real-world problems, spanning individual, corporate, and global scales.</p>
                 <p class="text-gray-700">We're committed to bridging the gap between visionary concepts and practical implementation, laying the groundwork for meaningful, sustainable change. Join us in creating a future where technology and nature work in harmony, where knowledge is freely accessible, and where sustainability is at the core of every decision.</p>
             </div>
             <div>
                 <h3 class="text-lg font-semibold text-gray-900">Connect:</h3>
-                <p class="text-gray-700">[Your contact information]</p>
+                <p class="text-gray-700">@destinyisearned</p>
             </div>
         </div>
     </div>
