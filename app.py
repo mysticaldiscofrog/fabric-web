@@ -71,7 +71,7 @@ HTML = '''
             </div>
             <div>
                 <h3 class="text-lg font-semibold text-gray-900">Connect:</h3>
-                <p class="text-gray-700">@destinyisearned</p>
+                <p class="text-gray-700">@destinyearned</p>
             </div>
         </div>
                 <div class="bg-white shadow-md rounded-lg p-6">
@@ -125,7 +125,7 @@ def process_youtube_url(url):
         os.environ['HTTP_PROXY'] = proxies['http']
         os.environ['HTTPS_PROXY'] = proxies['https']
 
-        yt_command = f"fabric yt --transcript {url}"
+        yt_command = f"yt --transcript {url}"
         wisdom_command = "fabric --stream --pattern extract_wisdom"
         
         print(f"Executing YT command: {yt_command}")
