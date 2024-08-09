@@ -88,7 +88,7 @@ HTML = '''
                     </div>
                 </form>
                 <p class="mt-4 text-sm text-gray-600">{{ message }}</p>
-                <pre class="mt-2 p-4 bg-gray-100 rounded-lg shadow-inner">{{ fabric_output }}</pre>
+                <pre class="mt-2 p-4 bg-gray-100 rounded-lg shadow-inner text-sm text-gray-800 font-mono whitespace-pre-wrap overflow-x-auto break-all max-w-full">{{ fabric_output }}</pre>
             </div>
         </div>
     </div>
