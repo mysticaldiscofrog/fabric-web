@@ -1,5 +1,6 @@
 import subprocess
 from flask import Flask, request, render_template_string, url_for
+import os
 
 app = Flask(__name__)
 
@@ -94,7 +95,15 @@ HTML = '''
 
 def process_youtube_url(url):
     try:
-        yt_command = f"fabric yt --transcript {url}"
+        # Setting up the proxy
+        proxies = {
+            "http": "http://gw.dataimpulse.com:823",
+            "https": "http://gw.dataimpulse.com:823",
+        }
+        os.environ['HTTP_PROXY'] = proxies['http']
+        os.environ['HTTPS_PROXY'] = proxies['https']
+
+        yt_command = f"yt --transcript {url}"
         wisdom_command = "fabric --stream --pattern extract_wisdom"
         
         print(f"Executing YT command: {yt_command}")
