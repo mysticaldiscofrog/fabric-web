@@ -1,6 +1,8 @@
 import subprocess
-from flask import Flask, request, render_template_string, url_for
 import os
+import re
+from urllib.parse import urlparse, parse_qs
+from flask import Flask, request, render_template_string, url_for
 
 app = Flask(__name__)
 
@@ -93,6 +95,26 @@ HTML = '''
 </html>
 '''
 
+def extract_video_id(url):
+    """
+    Extracts the video ID from a YouTube URL.
+    Handles both standard and shortened YouTube URLs.
+    """
+    parsed_url = urlparse(url)
+    if parsed_url.hostname == 'youtu.be':  # Shortened URL
+        return parsed_url.path[1:]  # The ID is in the path, strip leading '/'
+    elif parsed_url.hostname in ('www.youtube.com', 'youtube.com'):
+        if parsed_url.path == '/watch':
+            # Standard YouTube URL with '?v='
+            return parse_qs(parsed_url.query).get('v', [None])[0]
+        elif parsed_url.path.startswith('/embed/'):
+            # Embedded video URL '/embed/{video_id}'
+            return parsed_url.path.split('/')[2]
+        elif parsed_url.path.startswith('/v/'):
+            # Another type of embedded video URL '/v/{video_id}'
+            return parsed_url.path.split('/')[2]
+    return None
+
 def process_youtube_url(url):
     try:
         # Setting up the proxy
@@ -103,7 +125,7 @@ def process_youtube_url(url):
         os.environ['HTTP_PROXY'] = proxies['http']
         os.environ['HTTPS_PROXY'] = proxies['https']
 
-        yt_command = f"yt --transcript {url}"
+        yt_command = f"fabric yt --transcript {url}"
         wisdom_command = "fabric --stream --pattern extract_wisdom"
         
         print(f"Executing YT command: {yt_command}")
@@ -114,7 +136,18 @@ def process_youtube_url(url):
         wisdom_result = subprocess.run(wisdom_command, shell=True, capture_output=True, text=True, check=True, input=yt_result.stdout)
         print(f"Wisdom command output: {wisdom_result.stdout}")
         
-        return wisdom_result.stdout
+        # Extract the video ID and save the output to a file
+        video_id = extract_video_id(url)
+        if video_id:
+            filename = f"{video_id}.txt"
+            filepath = os.path.join(os.getcwd(), filename)
+            with open(filepath, 'w') as file:
+                file.write(wisdom_result.stdout)
+            print(f"Output saved to: {filepath}")
+            return f"Output saved to: {filepath}"
+        else:
+            return "Error: Could not extract video ID from the URL"
+        
     except subprocess.CalledProcessError as e:
         print(f"Error processing URL: {e}")
         print(f"Error output: {e.stderr}")
@@ -132,3 +165,4 @@ def index():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
+
