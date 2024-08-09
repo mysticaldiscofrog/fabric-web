@@ -71,24 +71,25 @@ HTML = '''
             </div>
             <div>
                 <h3 class="text-lg font-semibold text-gray-900">Connect:</h3>
-                <p class="text-gray-700">@destinyearned</p>
+                <p class="text-gray-700">@destinyisearned</p>
             </div>
         </div>
-                <div class="bg-white shadow-md rounded-lg p-6">
-            <h1 class="text-2xl font-bold text-purple-700 mb-4">YouTube Wisdom Extractor</h1>
-            <form method="POST" class="space-y-4">
-                <div>
-                    <label for="url" class="block text-sm font-medium text-gray-700">Enter YouTube URL</label>
-                    <input type="text" name="url" id="url" class="block w-full mt-1 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm" placeholder="https://youtube.com/watch?v=...">
-                </div>
-                <div>
-                    <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
-                        Extract Wisdom
-                    </button>
-                </div>
-            </form>
-            <p class="mt-4 text-sm text-gray-600">{{ message }}</p>
-            <pre class="mt-2 p-4 bg-gray-100 rounded-lg shadow-inner">{{ fabric_output }}</pre>
+            <div class="bg-white shadow-md rounded-lg p-6">
+                <h1 class="text-2xl font-bold text-purple-700 mb-4">YouTube Wisdom Extractor</h1>
+                <form method="POST" class="space-y-4" onsubmit="showLoading()">
+                    <div>
+                        <label for="url" class="block text-sm font-medium text-gray-700">Enter YouTube URL</label>
+                        <input type="text" name="url" id="url" class="block w-full mt-1 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm" placeholder="https://youtube.com/watch?v=...">
+                    </div>
+                    <div>
+                        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                            Extract Wisdom
+                        </button>
+                    </div>
+                </form>
+                <p class="mt-4 text-sm text-gray-600">{{ message }}</p>
+                <pre class="mt-2 p-4 bg-gray-100 rounded-lg shadow-inner">{{ fabric_output }}</pre>
+            </div>
         </div>
     </div>
 </body>
@@ -96,28 +97,20 @@ HTML = '''
 '''
 
 def extract_video_id(url):
-    """
-    Extracts the video ID from a YouTube URL.
-    Handles both standard and shortened YouTube URLs.
-    """
     parsed_url = urlparse(url)
     if parsed_url.hostname == 'youtu.be':  # Shortened URL
         return parsed_url.path[1:]  # The ID is in the path, strip leading '/'
     elif parsed_url.hostname in ('www.youtube.com', 'youtube.com'):
         if parsed_url.path == '/watch':
-            # Standard YouTube URL with '?v='
             return parse_qs(parsed_url.query).get('v', [None])[0]
         elif parsed_url.path.startswith('/embed/'):
-            # Embedded video URL '/embed/{video_id}'
             return parsed_url.path.split('/')[2]
         elif parsed_url.path.startswith('/v/'):
-            # Another type of embedded video URL '/v/{video_id}'
             return parsed_url.path.split('/')[2]
     return None
 
 def process_youtube_url(url):
     try:
-        # Setting up the proxy
         proxies = {
             "http": "http://gw.dataimpulse.com:823",
             "https": "http://gw.dataimpulse.com:823",
@@ -128,29 +121,20 @@ def process_youtube_url(url):
         yt_command = f"yt --transcript {url}"
         wisdom_command = "fabric --stream --pattern extract_wisdom"
         
-        print(f"Executing YT command: {yt_command}")
         yt_result = subprocess.run(yt_command, shell=True, capture_output=True, text=True, check=True)
-        print(f"YT command output: {yt_result.stdout}")
-        
-        print(f"Executing Wisdom command: {wisdom_command}")
         wisdom_result = subprocess.run(wisdom_command, shell=True, capture_output=True, text=True, check=True, input=yt_result.stdout)
-        print(f"Wisdom command output: {wisdom_result.stdout}")
         
-        # Extract the video ID and save the output to a file
         video_id = extract_video_id(url)
         if video_id:
             filename = f"{video_id}.txt"
             filepath = os.path.join(os.getcwd(), filename)
             with open(filepath, 'w') as file:
                 file.write(wisdom_result.stdout)
-            print(f"Output saved to: {filepath}")
-            return f"Output saved to: {filepath}"
+            return wisdom_result.stdout + f"\n\nOutput also saved to: {filepath}"
         else:
             return "Error: Could not extract video ID from the URL"
         
     except subprocess.CalledProcessError as e:
-        print(f"Error processing URL: {e}")
-        print(f"Error output: {e.stderr}")
         return f"Error: {e}\n\nStderr: {e.stderr}"
 
 @app.route('/', methods=['GET', 'POST'])
@@ -165,4 +149,3 @@ def index():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
-
